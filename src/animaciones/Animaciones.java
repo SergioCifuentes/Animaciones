@@ -5,6 +5,8 @@
  */
 package animaciones;
 
+import animaciones.ui.IDE;
+
 /**
  *
  * @author sergio
@@ -15,7 +17,9 @@ public class Animaciones {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+       IDE ide = new IDE();
+       ide.setVisible(true);
+               
     }
     
 }
