@@ -34,6 +34,17 @@ public class ManejadorDeEntrada {
         files = new File[4];
     }
 
+    public boolean verificarFilesExistentes(){
+        for (int i = 0; i < files.length; i++) {
+            if (files[i]==null) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public File obtenerFile(int index){
+        return files[index];
+    }
     public void abrirArchivo(File file) {
         try {
             String nombre = file.getName();

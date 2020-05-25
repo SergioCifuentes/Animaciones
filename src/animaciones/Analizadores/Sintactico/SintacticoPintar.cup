@@ -1,0 +1,343 @@
+package animaciones.Analizadores.Sintactico;
+import animaciones.Analizadores.Semantico.TablaDeSimbolos;
+import animaciones.Objetos.Lienzo;
+import animaciones.Analizadores.Semantico.Objeto;
+import java.util.ArrayList;
+import java.awt.Color;
+import animaciones.ui.IDE;
+import java_cup.runtime.Symbol;
+
+ parser code {:
+    public boolean error;
+    public boolean errorRecuperable;
+    public TablaDeSimbolos tablaDeSimbolos;
+        protected IDE ide;
+    public  void setFrame(IDE frame){
+        ide =frame;
+    }
+public void setTablaDeSimbolos(TablaDeSimbolos tablaDeSimbolos) {
+        this.tablaDeSimbolos = tablaDeSimbolos;
+    }
+    public  void setTabla(TablaDeSimbolos tabla){
+        this.tablaDeSimbolos =tabla;
+    }
+
+     public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        ide.escribirEnOutput("Error Sintactico Recuperado\n");
+        ide.escribirEnOutput("\t \tLexema: "+ lexema+"\n");
+        ide.escribirEnOutput("\t \tFila: "+ fila+"\n");
+        ide.escribirEnOutput("\t \tColumna: "+ columna+"\n");
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        ide.escribirEnOutput("Error Sintactico Panic Mode\n");
+        ide.escribirEnOutput("\t \tLexema: "+ lexema+"\n");
+        ide.escribirEnOutput("\t \tFila: "+ fila+"\n");
+        ide.escribirEnOutput("\t \tColumna: "+ columna+"\n");
+    }
+    
+    public void mostrarElementoNoExistente(String nombreLienzo, Symbol s){
+    ide.escribirEnOutput("Error Semantico \n");
+    ide.escribirEnOutput("Lienzo \""+nombreLienzo+"\" no existe en El Archivo .lnz \n");
+
+}
+
+    public void ayudarConErroresSemanticos(int tipo,Symbol s,String lexema) {
+        int fila = s.right;
+        int columna = s.left;
+            ide.escribirEnOutput("Error Semantico !!!\n"+lexema);
+             ide.escribirEnOutput("\t \tFila: "+ fila+"\n");
+        ide.escribirEnOutput("\t \tColumna: "+ columna+"\n");
+        String texto = "Sugerencias Para Error:\n";
+        switch (tipo) {
+           case 1:
+            texto+=lexema+" no es una variable int";
+            break;
+            case 2:
+            texto+=lexema+" no ha sido declarado";
+            break;
+            case 3:
+                texto+="No se pudo asignar el valor a "+lexema+", para Variables int se permiten\n\t-Enteros\n\t-Variables int\n\t-Operaciones Aritmeticas\n";
+            break;
+            case 4:
+                texto+="No se pudo asignar el valor a "+lexema+", para Variables String se permiten\n\t-Cadenas De Caracteres(entre Comillas)\n\t-Variables String\n";
+            break;
+            case 5:
+                texto+="No se pudo asignar el valor a "+lexema+", para Variables boolean se permiten\n\t-true\n\t-false\n\t-Variables boolean\n";
+            break;
+            case 6:
+                texto+="Es imposible realizar Operaciones Aritmeticas con una variable no int\n";
+                break;
+            
+            default:
+                throw new AssertionError();
+        }
+       ide.escribirEnOutput(texto);
+    }
+
+
+    public void ayudarConErroresSintacticos(int tipo) {
+        String texto = "Sugerencias Para Error:\n";
+        switch (tipo) {
+           case 1:
+                texto+="Para la Declaracion de una variable String solo existen tres tipos\n \t-int \n\t-String\n\t-boolean\n";
+            break;
+            case 2:
+                texto+="Se esperaba una variable boolean como por ejemplo:\n \t-true \n\t-false\n\t-Operacion Relacional\n";
+            break;
+            case 3:
+                texto+="Para las Operaciones Relaciones  se permiten:\n \t-== \n\t->\n\t-<\n\t-<=\n\t->=\n\t-<>\n";
+            break;  
+            case 4:
+                texto+="Para las Operaciones Logicas  se permiten:\n \t-AND \n\t-OR\n";
+            break;
+            case 6:
+                texto+="Debes declarar tus variables con: \nVARS[...]\n";
+               break;
+            default:
+                throw new AssertionError();
+        }
+       ide.escribirEnOutput(texto);
+    }
+
+
+:}
+
+action code {:
+    private boolean error =false;
+    private boolean errorRecuperable=false;
+        private ArrayList<Inicializacion> inicializaciones = new ArrayList<>();
+    private void resetearAtributos(Object[] atributos){
+        for(int i=0;i<atributos.length;i++){
+            atributos[i]=null;
+        }
+    }
+
+
+    public boolean getError(){
+        return error;
+    }
+        protected void mostrarAtributoRepetido(String atributo, Symbol s,AnalizadorSintacticoPintar asp) {
+        asp.ide.escribirEnOutput("Error Semantico \n");
+        asp.ide.escribirEnOutput("El atributo " + atributo + " ya se encuentra declarado\n");
+        asp.ide.escribirEnOutput("\t \tFila: " + s.right + "\n");
+        asp.ide.escribirEnOutput("\t \tColumna: " + s.left + "\n");
+
+    }
+
+
+
+
+    protected void mostrarElementoFaltante(Object[] atributos,int tipo, Symbol s,AnalizadorSintacticoPintar asp) {
+        asp.ide.escribirEnOutput("Atributo Faltante: \n");
+        String text="";
+        switch (tipo) {
+            
+            case 1:
+                if(atributos[0]==null){
+                    text+="\t-Red\n";
+                }
+                if(atributos[1]==null){
+                    text+="\t-Green\n";
+                }
+                if(atributos[2]==null){
+                     text+="\t-Blue\n";
+                }
+                break;
+            
+        }
+        asp.ide.escribirEnOutput(text);
+        asp.ide.escribirEnOutput("\t \tFila: " + s.right + "\n");
+        asp.ide.escribirEnOutput("\t \tColumna: " + s.left + "\n");
+
+    }
+
+:}
+
+/* Terminals (tokens returned by the scanner). */
+terminal VARS,INSTRUCCIONES,INT,STRING,BOOLEAN,TRUE,FALSE,PINTAR,IF,ELSE,WHILE,AND,OR,LLAVE_A,LLAVE_C,CORCHETE_A,CORCHETE_C ,
+IGUAL,IGUAL_IGUAL,MENOR,MAYOR, MAYOR_IGUAL,MENOR_IGUAL, DIFERENTE, SUMA, RESTA, DIV, MULT, PUNTOS_SEGUIDOS,PUNTO_COMA, COMA,
+PARENTESIS_A, PARENTESIS_C ;    
+terminal String Id,String,Entero,ERROR;
+
+/* Non-terminals */
+non terminal Inicio,Declaraciones,Declaracion,Tipo,Variables,Variable, Inicializacion, Numero, Num, Bool, Boolean, OpLog, 
+OpRelacional, Instrucciones, Codigo, Instruccion, Pintar, Id_Pintar, Num_Pintar, If, Else, While ;
+
+start with Inicio;
+
+Inicio 		::= VARS CORCHETE_A Declaraciones CORCHETE_C Instrucciones {:asp.error=this.error;asp.errorRecuperable=this.errorRecuperable;:}
+                    |error {:error=true;asp.ayudarConErroresSintacticos(6);asp.error=this.error;asp.errorRecuperable=this.errorRecuperable;:} ;
+Declaraciones   ::= Declaracion PUNTO_COMA Declaraciones
+					|Declaracion PUNTO_COMA;
+  Declaracion::=  Tipo:tipo Variables{:for (int i = 0; i < inicializaciones.size(); i++) {
+                                     if(asp.tablaDeSimbolos.obtenerTipo((String)inicializaciones.get(i).getId())==null){
+                                            if(inicializaciones.get(i).getValor()==null){
+                                                if(inicializaciones.get(i).isError()){
+                                                    asp.ayudarConErroresSemanticos((Integer)tipo+1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                }
+                                                asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),(Integer)tipo +3,null);
+                                           }else{
+                                               if(Inicializacion.verificarTipo((Integer)tipo,inicializaciones.get(i).getValor())) {
+                                                    asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),(Integer)tipo ,inicializaciones.get(i).getValor());
+                                                    System.out.println("Valor guardado");
+                                                }else{
+                                                     asp.ayudarConErroresSemanticos((Integer)tipo-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                }
+                                           }
+                                    }else{
+                                        mostrarAtributoRepetido((String)inicializaciones.get(i).getId(),((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),asp);
+                                    }
+                                    
+                                }inicializaciones= new ArrayList<>();:}   
+                    |error{:asp.ayudarConErroresSintacticos(1);:};
+
+Tipo::=		INT{:RESULT = TablaDeSimbolos.TIPO_INT;:} 
+                |STRING {:RESULT = TablaDeSimbolos.TIPO_STRING;:} 
+                |BOOLEAN{:RESULT = TablaDeSimbolos.TIPO_BOOLEAN;:} ;
+                
+Variables	::= Variable:in COMA Variables  {:inicializaciones.add(0,(Inicializacion)in);:}
+			|Variable:in{:inicializaciones.add(0,(Inicializacion)in);:};
+Variable	::= Id:id IGUAL Inicializacion:ini {:if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
+                                                RESULT =in;
+                                             }else{
+                                            Inicializacion in = new Inicializacion((String)id,null);
+                                            in.setError(true);
+                                            RESULT =in;
+                                            }:}
+				| Id:id{:Inicializacion in = new Inicializacion((String)id,null);
+                                          RESULT =in;:};
+Inicializacion::= String:ini {:RESULT=(String)ini.substring(1,((String)ini).length());:}
+		|Numero:ini {:RESULT=ini;:}
+		|Bool:ini {:RESULT=ini;:}
+                |error:er{:RESULT=null;:};
+Numero     ::= Num:num1 SUMA Numero:num2{:if(num1!=null&&num2!=null){
+                                            int in1;
+                                            int in2;
+                                            try {
+                                                in1 =(Integer)num1;
+                                                in2 =(Integer)num2;
+                                                RESULT=in1+in2;
+                                            } catch (Exception e) {
+                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
+                                                RESULT=null;
+                                            }
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+		|Num:num1 RESTA Numero:num2{:if(num1!=null&&num2!=null){
+                                            int in1;
+                                            int in2;
+                                            try {
+                                                in1 =(Integer)num1;
+                                                in2 =(Integer)num2;
+                                                RESULT=in1-in2;
+                                            } catch (Exception e) {
+                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
+                                                RESULT=null;
+                                            }
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+		|Num:num1 MULT Numero:num2{:if(num1!=null&&num2!=null){
+                                            int in1;
+                                            int in2;
+                                            try {
+                                                in1 =(Integer)num1;
+                                                in2 =(Integer)num2;
+                                                RESULT=in1*in2;
+                                            } catch (Exception e) {
+                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
+                                                RESULT=null;
+                                            }
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+		|Num:num1 DIV Numero:num2{:if(num1!=null&&num2!=null){
+                                            int in1;
+                                            int in2;
+                                            try {
+                                                in1 =(Integer)num1;
+                                                in2 =(Integer)num2;
+                                                RESULT=in1/in2;
+                                            } catch (Exception e) {
+                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
+                                                RESULT=null;
+                                            }
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+		|Num:entero {:RESULT=entero;:};
+Num::=Entero:entero {:RESULT=Integer.parseInt((String)entero);:}
+		|Id:id{ :Object valor=asp.tablaDeSimbolos.obtenerExistencia((String)id,TablaDeSimbolos.TIPO_INT);
+                            if (valor!=null){
+                            RESULT=((Objeto)valor).getValor();
+                        
+                    }else if(asp.tablaDeSimbolos.obtenerTipo((String)id)!=null){
+                        asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id);
+                        }else{
+                        asp.ayudarConErroresSemanticos(2,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id);}
+                        RESULT=null;:};
+
+Bool::= Boolean:bool{:RESULT =bool;:}
+	|Boolean:bool1 OpLog:op Bool:bool2{:if(bool1!=null&&op!=null&&bool2!=null){
+                                                                RESULT = Inicializacion.realizarOperacionLogica(Boolean.parseBoolean((String)bool1),
+                                                                           Boolean.parseBoolean((String)bool2),Integer.parseInt((String)op) );
+                                                                    }else{
+                                                                    RESULT=null;
+                                                                    }:};
+OpLog::= AND{:RESULT=Inicializacion.AND;:}
+	|OR{:RESULT=Inicializacion.OR;:}
+        |error {:asp.ayudarConErroresSintacticos(4);
+                            RESULT=null;:};
+Boolean     ::=  TRUE   {:RESULT = true;:}
+		| FALSE{:RESULT = false;:}
+		| Numero:num1 OpRelacional:op Numero:num2{:if(num1!=null&&op!=null&&num2!=null){
+                                                                RESULT = Inicializacion.realizarOperacionRelacional(Integer.parseInt((String)num1),
+                                                                           Integer.parseInt((String)num2),Integer.parseInt((String)op) );
+                                                                    }else{
+                                                                    RESULT=null;
+                                                                    }:};
+                
+OpRelacional::= IGUAL_IGUAL{:RESULT= Inicializacion.IGUAL_IGUAL;:}
+                |MENOR  {:RESULT= Inicializacion.IGUAL_IGUAL;:}
+                |MAYOR  {:RESULT= Inicializacion.IGUAL_IGUAL;:}
+                |MAYOR_IGUAL    {:RESULT= Inicializacion.IGUAL_IGUAL;:}
+                |MENOR_IGUAL    {:RESULT= Inicializacion.IGUAL_IGUAL;:}
+                |DIFERENTE  {:RESULT= Inicializacion.IGUAL_IGUAL;:}
+                |error {:asp.ayudarConErroresSintacticos(3);
+                            RESULT=null;:};
+
+
+
+
+
+
+Instrucciones 	::=  INSTRUCCIONES PARENTESIS_A Id PARENTESIS_C CORCHETE_A Codigo CORCHETE_C Instrucciones
+					|INSTRUCCIONES PARENTESIS_A Id PARENTESIS_C CORCHETE_A Codigo CORCHETE_C ;
+Codigo ::=  Instruccion Codigo
+		|Instruccion;
+Instruccion::= Id IGUAL Inicializacion PUNTO_COMA
+			|Pintar PUNTO_COMA
+			|If
+			|While;
+			
+Pintar::=PINTAR PARENTESIS_A Id_Pintar COMA Id_Pintar COMA Num_Pintar COMA Num_Pintar  PARENTESIS_C;
+Id_Pintar::=String
+			|Id;
+Num_Pintar::=Numero PUNTOS_SEGUIDOS Numero
+			|Numero;
+If::=	IF PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C Else;
+Else::=	ELSE LLAVE_A Codigo LLAVE_C
+		|;
+While	::= WHILE PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C;
+
+
+

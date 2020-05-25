@@ -5,6 +5,7 @@
  */
 package animaciones.ui;
 
+import animaciones.Analizadores.ManejadorDeAnalizadores;
 import animaciones.ui.backend.ManejadorDeEntrada;
 import animaciones.ui.backend.NumeroLinea;
 import java.io.File;
@@ -15,8 +16,8 @@ import javax.swing.JFileChooser;
  * @author sergio
  */
 public class IDE extends javax.swing.JFrame {
-    NumeroLinea nl;
-    ManejadorDeEntrada me;
+    private NumeroLinea nl;
+   private  ManejadorDeEntrada me;
     /**
      * Creates new form IDE
      */
@@ -24,7 +25,7 @@ public class IDE extends javax.swing.JFrame {
         me= new ManejadorDeEntrada(this);
         initComponents();
         contarLineas();
-         
+         cargarPruebas();
     }
 
     /**
@@ -37,16 +38,25 @@ public class IDE extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu6 = new javax.swing.JMenu();
+        jMenu7 = new javax.swing.JMenu();
+        layeredPanel = new javax.swing.JLayeredPane();
+        jPanel1 = new javax.swing.JPanel();
+        lblRuta = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         scrollLienzo = new javax.swing.JScrollPane();
         txtAreaLienzo = new javax.swing.JTextArea();
         scrollColor = new javax.swing.JScrollPane();
         txtAreaColor = new javax.swing.JTextArea();
-        scrollPintar = new javax.swing.JScrollPane();
-        txtAreaPintar = new javax.swing.JTextArea();
         scrollTiempo = new javax.swing.JScrollPane();
         txtAreaTiempo = new javax.swing.JTextArea();
-        lblRuta = new javax.swing.JLabel();
+        scrollPintar = new javax.swing.JScrollPane();
+        txtAreaPintar = new javax.swing.JTextArea();
+        pnlOutput = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtOutput = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
@@ -58,7 +68,10 @@ public class IDE extends javax.swing.JFrame {
         menuGuardar = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem13 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
+        jMenuItem11 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
@@ -66,7 +79,21 @@ public class IDE extends javax.swing.JFrame {
 
         jMenuItem10.setText("jMenuItem10");
 
+        jMenu6.setText("File");
+        jMenuBar2.add(jMenu6);
+
+        jMenu7.setText("Edit");
+        jMenuBar2.add(jMenu7);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        layeredPanel.setBackground(new java.awt.Color(118, 120, 128));
+        layeredPanel.setOpaque(true);
+
+        jPanel1.setBackground(new java.awt.Color(13, 10, 50));
+
+        lblRuta.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        lblRuta.setText("Ruta:");
 
         jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -86,19 +113,89 @@ public class IDE extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Color", scrollColor);
 
-        txtAreaPintar.setColumns(20);
-        txtAreaPintar.setRows(5);
-        scrollPintar.setViewportView(txtAreaPintar);
-
-        jTabbedPane1.addTab("Pintar", scrollPintar);
-
         txtAreaTiempo.setColumns(20);
         txtAreaTiempo.setRows(5);
         scrollTiempo.setViewportView(txtAreaTiempo);
 
         jTabbedPane1.addTab("Tiempo", scrollTiempo);
 
-        lblRuta.setText("Ruta:");
+        txtAreaPintar.setColumns(20);
+        txtAreaPintar.setRows(5);
+        scrollPintar.setViewportView(txtAreaPintar);
+
+        jTabbedPane1.addTab("Pintar", scrollPintar);
+
+        pnlOutput.setBackground(new java.awt.Color(112, 114, 122));
+        pnlOutput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        txtOutput.setBackground(new java.awt.Color(1, 1, 1));
+        txtOutput.setColumns(20);
+        txtOutput.setForeground(new java.awt.Color(254, 254, 254));
+        txtOutput.setRows(5);
+        jScrollPane1.setViewportView(txtOutput);
+
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(1, 1, 1));
+        jLabel1.setText("OutPut");
+
+        javax.swing.GroupLayout pnlOutputLayout = new javax.swing.GroupLayout(pnlOutput);
+        pnlOutput.setLayout(pnlOutputLayout);
+        pnlOutputLayout.setHorizontalGroup(
+            pnlOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlOutputLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+        pnlOutputLayout.setVerticalGroup(
+            pnlOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOutputLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jTabbedPane1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 557, Short.MAX_VALUE)
+                        .addComponent(lblRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlOutput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(lblRuta)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlOutput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        layeredPanel.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout layeredPanelLayout = new javax.swing.GroupLayout(layeredPanel);
+        layeredPanel.setLayout(layeredPanelLayout);
+        layeredPanelLayout.setHorizontalGroup(
+            layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layeredPanelLayout.setVerticalGroup(
+            layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layeredPanelLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
         jMenu1.setText("Archivo");
 
@@ -168,9 +265,26 @@ public class IDE extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Analisis");
+
+        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        jMenuItem13.setText("Analizar");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem13);
+
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Generar");
+
+        jMenuItem11.setText("Editador Grafico");
+        jMenu3.add(jMenuItem11);
+
+        jMenuItem12.setText("Generar");
+        jMenu3.add(jMenuItem12);
+
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Ayuda");
@@ -198,23 +312,11 @@ public class IDE extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 539, Short.MAX_VALUE)
-                        .addComponent(lblRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+            .addComponent(layeredPanel)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblRuta, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(layeredPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -310,6 +412,12 @@ public class IDE extends javax.swing.JFrame {
     private void menuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGuardarActionPerformed
        me.guardarFiles();
     }//GEN-LAST:event_menuGuardarActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        me.guardarFiles();
+        ManejadorDeAnalizadores manejadorDeAnalizadores = new ManejadorDeAnalizadores();
+        manejadorDeAnalizadores.analizar(this, me);
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
     private void contarLineas(){
         nl= new NumeroLinea(txtAreaLienzo);
         scrollLienzo.setRowHeaderView(nl);
@@ -328,7 +436,11 @@ public class IDE extends javax.swing.JFrame {
      * @param nombreArchivo
      * @param texto 
      */
-
+public void borrarOutput(){
+    txtOutput.setText("");
+    this.validate();
+    this.repaint();
+}
     public void setTxtAreaColor(String nombreArchivo,String texto) {
         txtAreaColor.setText(texto);
         jTabbedPane1.setTitleAt(1, nombreArchivo);
@@ -362,16 +474,38 @@ public class IDE extends javax.swing.JFrame {
         }
     }
 
+    public void cargarPruebas(){
+        File fileAux=new File("/home/sergio/AAAAA/eje1.pnt");
+        me.abrirArchivo(fileAux);
+        fileAux=new File("/home/sergio/AAAAA/eje1.tmp");
+        me.abrirArchivo(fileAux);
+        fileAux=new File("/home/sergio/AAAAA/eje1.clrs");
+        me.abrirArchivo(fileAux);
+        fileAux=new File("/home/sergio/AAAAA/eje1.lnz");
+        me.abrirArchivo(fileAux);
+    }
+    
+    
+    public void escribirEnOutput(String text){
+     txtOutput.append(text);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -380,9 +514,13 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLayeredPane layeredPanel;
     private javax.swing.JLabel lblRuta;
     private javax.swing.JMenuItem menuGuardar;
+    private javax.swing.JPanel pnlOutput;
     private javax.swing.JScrollPane scrollColor;
     private javax.swing.JScrollPane scrollLienzo;
     private javax.swing.JScrollPane scrollPintar;
@@ -391,5 +529,6 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JTextArea txtAreaLienzo;
     private javax.swing.JTextArea txtAreaPintar;
     private javax.swing.JTextArea txtAreaTiempo;
+    private javax.swing.JTextArea txtOutput;
     // End of variables declaration//GEN-END:variables
 }
