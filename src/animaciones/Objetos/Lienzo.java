@@ -34,6 +34,14 @@ public class Lienzo {
         
         return true;
     }
+
+    public ArrayList<ColorParaLienzo> getColores() {
+        return colores;
+    }
+
+    public Tiempo getTiempo() {
+        return tiempo;
+    }
     
     public static Color construirColor(String colorStr){
         Color color = new Color(Integer.valueOf( colorStr.substring( 1, 3 ), 16 ),

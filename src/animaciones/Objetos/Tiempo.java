@@ -15,7 +15,7 @@ public class Tiempo {
     private String idInicio;
     private String idFin;
     private ArrayList<Imagen> imagenes;
-
+    
     public Tiempo(String idInicio, String idFin, ArrayList<Imagen> imagenes) {
         this.idInicio = idInicio;
         this.idFin = idFin;

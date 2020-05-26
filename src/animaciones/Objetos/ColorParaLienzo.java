@@ -19,6 +19,14 @@ public class ColorParaLienzo {
         this.color = color;
         this.id = id;
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public String getId() {
+        return id;
+    }
     
     
     

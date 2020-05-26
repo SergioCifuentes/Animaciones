@@ -41,8 +41,8 @@ public class AnalizadorLexicoPintar implements java_cup.runtime.Scanner {
     "\1\6\1\7\1\12\1\13\1\4\4\1\1\44\1\0\1\45\1\0"+
     "\1\61\1\0\1\30\1\24\2\1\1\27\1\32\1\23\1\36\1\17"+
     "\2\1\1\26\1\1\1\20\1\25\2\1\1\22\1\33\1\21\1\31"+
-    "\1\1\1\35\3\1\1\40\1\0\1\41\7\0\1\65\u1f97\0\1\60"+
-    "\12\0\1\65\1\65\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\1\1\1\35\3\1\1\40\1\0\1\41\7\0\1\65\u1f96\0\1\60"+
+    "\1\60\12\0\1\65\1\65\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -334,7 +334,7 @@ public class AnalizadorLexicoPintar implements java_cup.runtime.Scanner {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 200) {
+    while (i < 202) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);

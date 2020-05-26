@@ -49,7 +49,7 @@ Digito = [0123456789]
 ".."                                     {return new Symbol(SimbolosPintar.PUNTOS_SEGUIDOS, yycolumn,yyline,yytext());}
 ";"                                     {return new Symbol(SimbolosPintar.PUNTO_COMA, yycolumn,yyline,yytext());}
         ","                                     {return new Symbol(SimbolosPintar.COMA, yycolumn,yyline,yytext());}    
-        (("\""|"”")({Letra}|"_"|{Digito}|{Signo}|" ")+("\""|"”"))    {return new Symbol(SimbolosPintar.String, yycolumn,yyline,yytext());}
+       (("\""|"”"|"“")({Letra}|"_"|{Digito}|{Signo}|" ")+("\""|"”"|"“"))    {return new Symbol(SimbolosPintar.String, yycolumn,yyline,yytext());}
          ({Letra}|"_") ({Letra}|"_"|{Digito})*                {return new Symbol(SimbolosPintar.Id, yycolumn,yyline,yytext()); }
          
         ({Digito})+                                     {return new Symbol(SimbolosPintar.Entero, yycolumn,yyline,yytext());}

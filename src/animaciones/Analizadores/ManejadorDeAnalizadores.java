@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,17 +29,17 @@ import java.util.logging.Logger;
  */
 public class ManejadorDeAnalizadores {
 private boolean analizado=false;
+    private TablaDeSimbolos tds;
     public void analizar(IDE ide, ManejadorDeEntrada me) {
         analizado=false;
         if (true/*me.verificarFilesExistentes()*/) {
             ide.borrarOutput();
             ide.escribirEnOutput("Empezando Analisis...\n");
             ide.escribirEnOutput("Analisis De Archivo Lienzo\n");
-            TablaDeSimbolos tablaDeSimbolos = new TablaDeSimbolos();
-
+             tds = new TablaDeSimbolos();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(me.obtenerFile(0)));
-                TablaDeSimbolos tds = new TablaDeSimbolos();
+                 tds = new TablaDeSimbolos();
                 AnalizadorLexicoLienzo all = new AnalizadorLexicoLienzo(br);
                 AnalizadorSintacticoLienzo analizadorSintacticoLienzo = new AnalizadorSintacticoLienzo(all);
                 analizadorSintacticoLienzo.setFrame(ide);
@@ -90,6 +91,8 @@ private boolean analizado=false;
                                 } else {
                                     ide.escribirEnOutput("Archivo .pnt Analizado Correctamente\n\n");
                                 }
+                                    ide.escribirEnOutput("Listo Para Generar\n");
+                                
                                 analizado=true;
                             } else {
                                 ide.escribirEnOutput("Error: No fue posible recuperarse del Arhcivo .pnt\n");
@@ -104,6 +107,8 @@ private boolean analizado=false;
                 } else {
                     ide.escribirEnOutput("Error: No fue posible recuperarse del Arhcivo .lnz\n");
                 }
+                
+                
                 System.out.println("TOTAL DE ELEMENTO EN LA TABLA:" + tds.getObjetos().size());
                 for (int i = 0; i < tds.getObjetos().size(); i++) {
                     System.out.println(tds.getObjetos().get(i).getId());
@@ -122,6 +127,21 @@ private boolean analizado=false;
         } else {
             ide.escribirEnOutput("Debes Abrir los Cuatro Archivos Para Analizar\n");
         }
+    }
+
+    public ArrayList<Lienzo> obtenerLienzos(){
+        ArrayList<Lienzo> lienzos = new ArrayList<>();
+        for (int i = 0; i < tds.getObjetos().size(); i++) {
+   
+            if (tds.getObjetos().get(i).getTipo()==TablaDeSimbolos.TIPO_LIENZO) {
+                lienzos.add((Lienzo)tds.getObjetos().get(i).getValor());
+            }
+        }
+        return lienzos;
+    }
+    
+    public boolean isAnalizado() {
+        return analizado;
     }
 
 }

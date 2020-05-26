@@ -6,10 +6,16 @@
 package animaciones.ui;
 
 import animaciones.Analizadores.ManejadorDeAnalizadores;
+import animaciones.Imagenes.Manuales;
+import animaciones.Objetos.Lienzo;
+import animaciones.Objetos.ManejadorDeCasillas;
 import animaciones.ui.backend.ManejadorDeEntrada;
 import animaciones.ui.backend.NumeroLinea;
+import com.sun.xml.internal.bind.v2.util.EditDistance;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,6 +24,7 @@ import javax.swing.JFileChooser;
 public class IDE extends javax.swing.JFrame {
     private NumeroLinea nl;
    private  ManejadorDeEntrada me;
+    private ManejadorDeAnalizadores manejadorDeAnalizadores;
     /**
      * Creates new form IDE
      */
@@ -153,7 +160,7 @@ public class IDE extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOutputLayout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -162,14 +169,12 @@ public class IDE extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTabbedPane1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 557, Short.MAX_VALUE)
+                        .addGap(0, 675, Short.MAX_VALUE)
                         .addComponent(lblRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlOutput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,8 +183,8 @@ public class IDE extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlOutput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlOutput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         layeredPanel.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -188,13 +193,15 @@ public class IDE extends javax.swing.JFrame {
         layeredPanel.setLayout(layeredPanelLayout);
         layeredPanelLayout.setHorizontalGroup(
             layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layeredPanelLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layeredPanelLayout.setVerticalGroup(
             layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layeredPanelLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jMenu1.setText("Archivo");
@@ -280,9 +287,19 @@ public class IDE extends javax.swing.JFrame {
         jMenu3.setText("Generar");
 
         jMenuItem11.setText("Editador Grafico");
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem11);
 
         jMenuItem12.setText("Generar");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem12);
 
         jMenuBar1.add(jMenu3);
@@ -290,12 +307,21 @@ public class IDE extends javax.swing.JFrame {
         jMenu4.setText("Ayuda");
 
         jMenuItem8.setText("Manual Tecnico");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem8);
 
         jMenuItem9.setText("Manual De Usuario");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem9);
 
-        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem6.setText("Acerca De");
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -312,11 +338,15 @@ public class IDE extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(layeredPanel)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(layeredPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(layeredPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(layeredPanel)
+                .addContainerGap())
         );
 
         pack();
@@ -406,7 +436,8 @@ public class IDE extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-           me.guardarFiles();
+         InfoDesarrollador id = new InfoDesarrollador(this, rootPaneCheckingEnabled);
+         id.setVisible(true);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void menuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGuardarActionPerformed
@@ -415,9 +446,43 @@ public class IDE extends javax.swing.JFrame {
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
         me.guardarFiles();
-        ManejadorDeAnalizadores manejadorDeAnalizadores = new ManejadorDeAnalizadores();
+         manejadorDeAnalizadores = new ManejadorDeAnalizadores();
         manejadorDeAnalizadores.analizar(this, me);
     }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        if (manejadorDeAnalizadores.isAnalizado()) {
+            ArrayList<Lienzo> lienzo= manejadorDeAnalizadores.obtenerLienzos();
+            ManejadorDeCasillas mdc= new ManejadorDeCasillas();
+            mdc.generarPanels(lienzo);
+            EditadorLienzos el = new EditadorLienzos(lienzo);
+            el.setVisible(true);
+            
+        }else{
+            JOptionPane.showMessageDialog(this, "Se debe Analizar Correctamente el Texto para esta Funcion", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        if (manejadorDeAnalizadores.isAnalizado()) {
+            ArrayList<Lienzo> lienzo= manejadorDeAnalizadores.obtenerLienzos();
+            ManejadorDeCasillas mdc= new ManejadorDeCasillas();
+            mdc.generarPanels(lienzo);
+            
+        }else{
+            JOptionPane.showMessageDialog(this, "Se debe Analizar Correctamente el Texto para esta Funcion", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        Manuales m = new  Manuales();
+        m.abrirManualDeUsuario();
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+       Manuales m = new  Manuales();
+        m.abrirManualDeTecnico();
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
     private void contarLineas(){
         nl= new NumeroLinea(txtAreaLienzo);
         scrollLienzo.setRowHeaderView(nl);

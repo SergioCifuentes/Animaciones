@@ -58,10 +58,10 @@ public void setTablaDeSimbolos(TablaDeSimbolos tablaDeSimbolos) {
         String texto = "Sugerencias Para Error:\n";
         switch (tipo) {
            case 1:
-            texto+=lexema+" no es una variable int";
+            texto+=lexema+" no es una variable int\n";
             break;
             case 2:
-            texto+=lexema+" no ha sido declarado";
+            texto+=lexema+" no ha sido declarado\n";
             break;
             case 3:
                 texto+="No se pudo asignar el valor a "+lexema+", para Variables int se permiten\n\t-Enteros\n\t-Variables int\n\t-Operaciones Aritmeticas\n";
@@ -75,6 +75,12 @@ public void setTablaDeSimbolos(TablaDeSimbolos tablaDeSimbolos) {
             case 6:
                 texto+="Es imposible realizar Operaciones Aritmeticas con una variable no int\n";
                 break;
+            case 7:
+            texto+=lexema+" no es una variable String\n";
+            break;
+            case 8:
+            texto+=lexema+" no es una variable boolean\n";
+            break;
             
             default:
                 throw new AssertionError();
@@ -168,8 +174,8 @@ PARENTESIS_A, PARENTESIS_C ;
 terminal String Id,String,Entero,ERROR;
 
 /* Non-terminals */
-non terminal Inicio,Declaraciones,Declaracion,Tipo,Variables,Variable, Inicializacion, Numero, Num, Bool, Boolean, OpLog, 
-OpRelacional, Instrucciones, Codigo, Instruccion, Pintar, Id_Pintar, Num_Pintar, If, Else, While ;
+non terminal Inicio,Declaraciones,Declaracion, Inicializacion, Numero, Bool, Boolean, OpLog, 
+OpRelacional, Instrucciones,VarId,OpAritmetica, Codigo,VariablesBoolean,VariableBoolean,VariableInt,VariablesInt,VariableString,VariablesString, Instruccion, Pintar, Id_Pintar, Num_Pintar, If, Else, While ;
 
 start with Inicio;
 
@@ -177,35 +183,82 @@ Inicio 		::= VARS CORCHETE_A Declaraciones CORCHETE_C Instrucciones {:asp.error=
                     |error {:error=true;asp.ayudarConErroresSintacticos(6);asp.error=this.error;asp.errorRecuperable=this.errorRecuperable;:} ;
 Declaraciones   ::= Declaracion PUNTO_COMA Declaraciones
 					|Declaracion PUNTO_COMA;
-  Declaracion::=  Tipo:tipo Variables{:for (int i = 0; i < inicializaciones.size(); i++) {
+  Declaracion::=  INT VariablesInt  {:for (int i = 0; i < inicializaciones.size(); i++) {
                                      if(asp.tablaDeSimbolos.obtenerTipo((String)inicializaciones.get(i).getId())==null){
                                             if(inicializaciones.get(i).getValor()==null){
                                                 if(inicializaciones.get(i).isError()){
-                                                    asp.ayudarConErroresSemanticos((Integer)tipo+1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                    asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_INT-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
                                                 }
-                                                asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),(Integer)tipo +3,null);
+                                                asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_INT,null);
                                            }else{
-                                               if(Inicializacion.verificarTipo((Integer)tipo,inicializaciones.get(i).getValor())) {
-                                                    asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),(Integer)tipo ,inicializaciones.get(i).getValor());
+                                               if(Inicializacion.verificarTipo(TablaDeSimbolos.TIPO_INT,inicializaciones.get(i).getValor())) {
+                                                    asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_INT,inicializaciones.get(i).getValor());
                                                     System.out.println("Valor guardado");
                                                 }else{
-                                                     asp.ayudarConErroresSemanticos((Integer)tipo-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                     asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_INT-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
                                                 }
                                            }
                                     }else{
                                         mostrarAtributoRepetido((String)inicializaciones.get(i).getId(),((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),asp);
                                     }
                                     
-                                }inicializaciones= new ArrayList<>();:}   
+                                }inicializaciones= new ArrayList<>();:}
+                    |STRING VariablesString {:for (int i = 0; i < inicializaciones.size(); i++) {
+                                     if(asp.tablaDeSimbolos.obtenerTipo((String)inicializaciones.get(i).getId())==null){
+                                            if(inicializaciones.get(i).getValor()==null){
+                                                if(inicializaciones.get(i).isError()){
+                                                    asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_STRING-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                }
+                                                asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_STRING,null);
+                                           }else{
+                                               if(Inicializacion.verificarTipo(TablaDeSimbolos.TIPO_STRING,inicializaciones.get(i).getValor())) {
+                                                    asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_STRING,inicializaciones.get(i).getValor());
+                                                    System.out.println("Valor guardado");
+                                                }else{
+                                                     asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_STRING-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                }
+                                           }
+                                    }else{
+                                        mostrarAtributoRepetido((String)inicializaciones.get(i).getId(),((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),asp);
+                                    }
+                                    
+                                }inicializaciones= new ArrayList<>();:}
+                    |BOOLEAN VariablesBoolean   {:for (int i = 0; i < inicializaciones.size(); i++) {
+                                     if(asp.tablaDeSimbolos.obtenerTipo((String)inicializaciones.get(i).getId())==null){
+                                            if(inicializaciones.get(i).getValor()==null){
+                                                if(inicializaciones.get(i).isError()){
+                                                    asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_BOOLEAN-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                }
+                                                asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_BOOLEAN,null);
+                                           }else{
+                                               if(Inicializacion.verificarTipo(TablaDeSimbolos.TIPO_BOOLEAN,inicializaciones.get(i).getValor())) {
+                                                    asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_BOOLEAN,inicializaciones.get(i).getValor());
+                                                    System.out.println("Valor guardado");
+                                                }else{
+                                                     asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_BOOLEAN-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
+                                                }
+                                           }
+                                    }else{
+                                        mostrarAtributoRepetido((String)inicializaciones.get(i).getId(),((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),asp);
+                                    }
+                                    
+                                }inicializaciones= new ArrayList<>();:}
+ 
                     |error{:asp.ayudarConErroresSintacticos(1);:};
 
-Tipo::=		INT{:RESULT = TablaDeSimbolos.TIPO_INT;:} 
-                |STRING {:RESULT = TablaDeSimbolos.TIPO_STRING;:} 
-                |BOOLEAN{:RESULT = TablaDeSimbolos.TIPO_BOOLEAN;:} ;
-                
-Variables	::= Variable:in COMA Variables  {:inicializaciones.add(0,(Inicializacion)in);:}
-			|Variable:in{:inicializaciones.add(0,(Inicializacion)in);:};
-Variable	::= Id:id IGUAL Inicializacion:ini {:if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
+VariablesInt     ::=VariableInt:in COMA VariablesInt  {:inicializaciones.add(0,(Inicializacion)in);:}
+			|VariableInt:in{:inicializaciones.add(0,(Inicializacion)in);:};
+                        
+VariableInt	::= Id:id IGUAL Numero:ini {:
+                                            if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
+                                                RESULT =in;
+                                             }else{
+                                            Inicializacion in = new Inicializacion((String)id,null);
+                                            in.setError(true);
+                                            RESULT =in;
+                                            }:}
+                    |Id:id IGUAL VarId:ini {:
+                                            if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
                                                 RESULT =in;
                                              }else{
                                             Inicializacion in = new Inicializacion((String)id,null);
@@ -214,78 +267,158 @@ Variable	::= Id:id IGUAL Inicializacion:ini {:if(ini!=null){Inicializacion in = 
                                             }:}
 				| Id:id{:Inicializacion in = new Inicializacion((String)id,null);
                                           RESULT =in;:};
-Inicializacion::= String:ini {:RESULT=(String)ini.substring(1,((String)ini).length());:}
-		|Numero:ini {:RESULT=ini;:}
-		|Bool:ini {:RESULT=ini;:}
-                |error:er{:RESULT=null;:};
-Numero     ::= Num:num1 SUMA Numero:num2{:if(num1!=null&&num2!=null){
-                                            int in1;
-                                            int in2;
-                                            try {
-                                                in1 =(Integer)num1;
-                                                in2 =(Integer)num2;
-                                                RESULT=in1+in2;
-                                            } catch (Exception e) {
-                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
-                                                RESULT=null;
-                                            }
-                                            }else{
-                                            RESULT=null;
-                                            }:}
-		|Num:num1 RESTA Numero:num2{:if(num1!=null&&num2!=null){
-                                            int in1;
-                                            int in2;
-                                            try {
-                                                in1 =(Integer)num1;
-                                                in2 =(Integer)num2;
-                                                RESULT=in1-in2;
-                                            } catch (Exception e) {
-                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
-                                                RESULT=null;
-                                            }
-                                            }else{
-                                            RESULT=null;
-                                            }:}
-		|Num:num1 MULT Numero:num2{:if(num1!=null&&num2!=null){
-                                            int in1;
-                                            int in2;
-                                            try {
-                                                in1 =(Integer)num1;
-                                                in2 =(Integer)num2;
-                                                RESULT=in1*in2;
-                                            } catch (Exception e) {
-                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
-                                                RESULT=null;
-                                            }
-                                            }else{
-                                            RESULT=null;
-                                            }:}
-		|Num:num1 DIV Numero:num2{:if(num1!=null&&num2!=null){
-                                            int in1;
-                                            int in2;
-                                            try {
-                                                in1 =(Integer)num1;
-                                                in2 =(Integer)num2;
-                                                RESULT=in1/in2;
-                                            } catch (Exception e) {
-                                                asp.ayudarConErroresSemanticos(6,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),null);
-                                                RESULT=null;
-                                            }
-                                            }else{
-                                            RESULT=null;
-                                            }:}
-		|Num:entero {:RESULT=entero;:};
-Num::=Entero:entero {:RESULT=Integer.parseInt((String)entero);:}
-		|Id:id{ :Object valor=asp.tablaDeSimbolos.obtenerExistencia((String)id,TablaDeSimbolos.TIPO_INT);
+VarId ::= Id:id{:Object valor=asp.tablaDeSimbolos.obtenerExistencia((String)id);
                             if (valor!=null){
                             RESULT=((Objeto)valor).getValor();
                         
-                    }else if(asp.tablaDeSimbolos.obtenerTipo((String)id)!=null){
-                        asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id);
-                        }else{
-                        asp.ayudarConErroresSemanticos(2,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id);}
-                        RESULT=null;:};
+                    }else{
+                        asp.ayudarConErroresSemanticos(2,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id);
+                        RESULT=null;}:};
+VariablesString     ::=VariableString:in COMA VariablesString  {:inicializaciones.add(0,(Inicializacion)in);:}
+			|VariableString:in{:inicializaciones.add(0,(Inicializacion)in);:};
+  
+VariableString	::= Id:id IGUAL String:ini {:if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
+                                                RESULT =in;
+                                             }else{
+                                            Inicializacion in = new Inicializacion((String)id,null);
+                                            in.setError(true);
+                                            RESULT =in;
+                                            }:}
+                    |Id:id IGUAL VarId:ini {:
+                                            if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
+                                                RESULT =in;
+                                             }else{
+                                            Inicializacion in = new Inicializacion((String)id,null);
+                                            in.setError(true);
+                                            RESULT =in;
+                                            }:}
+				| Id:id{:Inicializacion in = new Inicializacion((String)id,null);
+                                          RESULT =in;:};
 
+
+VariablesBoolean     ::=VariableBoolean:in COMA VariablesBoolean  {:inicializaciones.add(0,(Inicializacion)in);:}
+			|VariableBoolean:in{:inicializaciones.add(0,(Inicializacion)in);:};
+  
+VariableBoolean	::= Id:id IGUAL Bool:ini {:if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
+                                                RESULT =in;
+                                             }else{
+                                            Inicializacion in = new Inicializacion((String)id,null);
+                                            in.setError(true);
+                                            RESULT =in;
+                                            }:}
+                                |Id:id IGUAL VarId:ini {:
+                                            if(ini!=null){Inicializacion in = new Inicializacion((String)id,ini);
+                                                RESULT =in;
+                                             }else{
+                                            Inicializacion in = new Inicializacion((String)id,null);
+                                            in.setError(true);
+                                            RESULT =in;
+                                            }:}
+				| Id:id{:Inicializacion in = new Inicializacion((String)id,null);
+                                          RESULT =in;:};
+
+Numero     ::= Entero:num1 OpAritmetica:op Numero:num2{:if(num1!=null&&num2!=null){
+
+                                                switch ((Integer)op) {
+                                                 case 1:
+                                                    RESULT = Integer.parseInt(num1)+(Integer)num2;
+                                                break;
+                                                case 2:
+                                                    RESULT = Integer.parseInt(num1)-(Integer)num2;
+                                                break;
+                                                case 3:
+                                                    RESULT = Integer.parseInt(num1)*(Integer)num2;
+                                                break;
+                                                case 4:
+                                                    RESULT = Integer.parseInt(num1)/(Integer)num2;
+                                                break;
+                                                        }
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+
+		|VarId:id OpAritmetica:op Numero:num2  {:if(id!=null&&num2!=null){
+                                                try {
+                                                    Integer num1=(Integer)id;
+                                                    switch ((Integer)op) {
+                                                 case 1:
+                                                    RESULT = num1+(Integer)num2;
+                                                break;
+                                                case 2:
+                                                    RESULT = num1-(Integer)num2;
+                                                break;
+                                                case 3:
+                                                    RESULT = num1*(Integer)num2;
+                                                break;
+                                                case 4:
+                                                    RESULT = num1/(Integer)num2;
+                                                break;
+                                                        }
+                                                } catch (Exception e) {
+                                                    asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id);
+                                                    RESULT =null;
+                                                    }
+                                                
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+                |VarId:id1 OpAritmetica:op VarId:id2   {:if(id2!=null&&id1!=null){
+                                                try {
+                                                    Integer num1=(Integer)id1;
+                                                    Integer num2=(Integer)id2;
+                                                    switch ((Integer)op) {
+                                                 case 1:
+                                                    RESULT = num1+num2;
+                                                break;
+                                                case 2:
+                                                    RESULT = num1-num2;
+                                                break;
+                                                case 3:
+                                                    RESULT =num1*num2;
+                                                break;
+                                                case 4:
+                                                    RESULT = num1/num2;
+                                                break;
+                                                        }
+                                                } catch (Exception e) {
+                                                    asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id1);
+                                                    RESULT =null;
+                                                    }
+                                                
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+                |Entero:num1 OpAritmetica:op VarId:id  {:if(id!=null&&num1!=null){
+                                                try {
+                                                    Integer num2=(Integer)id;
+                                                    switch ((Integer)op) {
+                                                 case 1:
+                                                    RESULT =Integer.parseInt(num1)+num2;
+                                                break;
+                                                case 2:
+                                                    RESULT = Integer.parseInt(num1)-num2;
+                                                break;
+                                                case 3:
+                                                    RESULT =Integer.parseInt(num1)*num2;
+                                                break;
+                                                case 4:
+                                                    RESULT =Integer.parseInt(num1)/num2;
+                                                break;
+                                                        }
+                                                } catch (Exception e) {
+                                                    asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id);
+                                                    RESULT =null;
+                                                    }
+                                                
+                                            }else{
+                                            RESULT=null;
+                                            }:}
+                |Entero:entero{:RESULT=Integer.parseInt((String)entero);:};
+
+OpAritmetica::= SUMA{:RESULT=1;:}
+                |RESTA{:RESULT=2;:}
+                |MULT{:RESULT=3;:}
+                |DIV{:RESULT=4;:};
 Bool::= Boolean:bool{:RESULT =bool;:}
 	|Boolean:bool1 OpLog:op Bool:bool2{:if(bool1!=null&&op!=null&&bool2!=null){
                                                                 RESULT = Inicializacion.realizarOperacionLogica(Boolean.parseBoolean((String)bool1),
@@ -304,6 +437,48 @@ Boolean     ::=  TRUE   {:RESULT = true;:}
                                                                            Integer.parseInt((String)num2),Integer.parseInt((String)op) );
                                                                     }else{
                                                                     RESULT=null;
+                                                                    }:}
+                |Numero:num1 OpRelacional:op VarId:id2{:if(num1!=null&&op!=null&&id2!=null){
+                                                                try {
+                                                    Integer num2=(Integer)id2;
+                                                    RESULT = Inicializacion.realizarOperacionRelacional(Integer.parseInt((String)num1),
+                                                                           num2,Integer.parseInt((String)op) );
+                                                        
+                                                        } catch (Exception e) {
+                                                             asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id2);
+                                                            RESULT =null;
+                                                             }
+                                                               
+                                                                    }else{
+                                                                    RESULT=null;
+                                                                    }:}
+                |VarId:id1 OpRelacional:op VarId:id2   {:if(id1!=null&&op!=null&&id2!=null){
+                                                                try {
+                                                                Integer num1=(Integer)id1;
+                                                    Integer num2=(Integer)id2;
+                                                    RESULT = Inicializacion.realizarOperacionRelacional(num1,num2,Integer.parseInt((String)op) );
+                                                        
+                                                        } catch (Exception e) {
+                                                             asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),id1+" "+id2);
+                                                            RESULT =null;
+                                                             }
+                                                               
+                                                                    }else{
+                                                                    RESULT=null;
+                                                                    }:}
+                |VarId:id1 OpRelacional:op Numero:num2 {:if(id1!=null&&op!=null&&num2!=null){
+                                                                try {
+                                                    Integer num1=(Integer)id1;
+                                                    RESULT = Inicializacion.realizarOperacionRelacional(num1,
+                                                                           Integer.parseInt((String)num2),Integer.parseInt((String)op) );
+                                                        
+                                                        } catch (Exception e) {
+                                                             asp.ayudarConErroresSemanticos(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)id1);
+                                                            RESULT =null;
+                                                             }
+                                                               
+                                                                    }else{
+                                                                    RESULT=null;
                                                                     }:};
                 
 OpRelacional::= IGUAL_IGUAL{:RESULT= Inicializacion.IGUAL_IGUAL;:}
@@ -311,9 +486,7 @@ OpRelacional::= IGUAL_IGUAL{:RESULT= Inicializacion.IGUAL_IGUAL;:}
                 |MAYOR  {:RESULT= Inicializacion.IGUAL_IGUAL;:}
                 |MAYOR_IGUAL    {:RESULT= Inicializacion.IGUAL_IGUAL;:}
                 |MENOR_IGUAL    {:RESULT= Inicializacion.IGUAL_IGUAL;:}
-                |DIFERENTE  {:RESULT= Inicializacion.IGUAL_IGUAL;:}
-                |error {:asp.ayudarConErroresSintacticos(3);
-                            RESULT=null;:};
+                |DIFERENTE  {:RESULT= Inicializacion.IGUAL_IGUAL;:};
 
 
 
@@ -322,22 +495,30 @@ OpRelacional::= IGUAL_IGUAL{:RESULT= Inicializacion.IGUAL_IGUAL;:}
 
 Instrucciones 	::=  INSTRUCCIONES PARENTESIS_A Id PARENTESIS_C CORCHETE_A Codigo CORCHETE_C Instrucciones
 					|INSTRUCCIONES PARENTESIS_A Id PARENTESIS_C CORCHETE_A Codigo CORCHETE_C ;
+
 Codigo ::=  Instruccion Codigo
 		|Instruccion;
-Instruccion::= Id IGUAL Inicializacion PUNTO_COMA
+Instruccion::= Id IGUAL Id PUNTO_COMA
+                |Id IGUAL Numero PUNTO_COMA
+                |Id IGUAL String PUNTO_COMA
+                |Id IGUAL Bool PUNTO_COMA
 			|Pintar PUNTO_COMA
 			|If
 			|While;
-			
-Pintar::=PINTAR PARENTESIS_A Id_Pintar COMA Id_Pintar COMA Num_Pintar COMA Num_Pintar  PARENTESIS_C;
-Id_Pintar::=String
-			|Id;
-Num_Pintar::=Numero PUNTOS_SEGUIDOS Numero
-			|Numero;
-If::=	IF PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C Else;
+CodigoNoRealizable ::=  Instruccion CodigoNoRealizable
+                        |Instruccion;			
+Pintar::=PINTAR PARENTESIS_A Id_Pintar COMA Id_Pintar COMA Num_Pintar COMA Num_Pintar PARENTESIS_C;
+Id_Pintar::=String:string {:RESULT =string;:}
+            |VarId:id {:RESULT =id;:};
+Num_Pintar::=Numero PUNTOS_SEGUIDOS Num_Pintar
+			|Numero
+                |Id PUNTOS_SEGUIDOS Num_Pintar
+                |Id;
+If::=	IF PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C Else
+        |IF PARENTESIS_A Id PARENTESIS_C LLAVE_A CodigoNoRealizable LLAVE_C Else;
 Else::=	ELSE LLAVE_A Codigo LLAVE_C
 		|;
-While	::= WHILE PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C;
-
+While	::= WHILE PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C
+            |WHILE PARENTESIS_A Id PARENTESIS_C LLAVE_A Codigo LLAVE_C;
 
 

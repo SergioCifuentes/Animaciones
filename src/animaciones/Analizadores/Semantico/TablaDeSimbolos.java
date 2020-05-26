@@ -43,6 +43,24 @@ public class TablaDeSimbolos {
         
         
     }
+        public Object obtenerExistencia(String id){
+            
+        int index = binarySearch(id);
+        while (true) {
+            if (objetos.size()>=index+1&&objetos.get(index).getId().equals(id)) {
+                 
+                     
+                     return objetos.get(index);
+                
+                 
+            }else{
+                return null;
+            }
+           
+        }
+        
+        
+    }
     public Integer obtenerTipo(String id){
         int index = binarySearch(id);
         if (objetos.size()>=index+1&&objetos.get(index).getId().equals(id)) {
