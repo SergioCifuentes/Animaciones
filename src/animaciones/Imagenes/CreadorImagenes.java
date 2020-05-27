@@ -5,12 +5,14 @@
  */
 package animaciones.Imagenes;
 
+import animaciones.Analizadores.Semantico.Instrucciones.Pintar;
 import animaciones.Objetos.Imagen;
 import animaciones.Objetos.Lienzo;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -28,20 +30,66 @@ public class CreadorImagenes {
 
     File imagenes = new File("./Imagenes");
 
-    public void crearImagenes(ArrayList<Lienzo> lienzos) {
+    public void crearImagenes(ArrayList<Lienzo> lienzos,File pintar) {
         if (!imagenes.exists()) {
             imagenes.mkdir();
             imagenes.mkdirs();
         }
+        
+        String texto=obtenerDeclaraciones(pintar);
         for (int i = 0; i < lienzos.size(); i++) {
+            texto+=escribirArchivoPintar(lienzos.get(i));
             try {
                 crear(lienzos.get(i));
             } catch (IOException ex) {
                 Logger.getLogger(CreadorImagenes.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        try {
+            FileWriter fw = new FileWriter(pintar);
+            fw.write(texto);
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(CreadorImagenes.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    public void crearImagenes(ArrayList<Lienzo> lienzos) {
+        if (!imagenes.exists()) {
+            imagenes.mkdir();
+            imagenes.mkdirs();
+        }
+        
+        for (int i = 0; i < lienzos.size(); i++) {
+            
+            try {
+                crear(lienzos.get(i));
+            } catch (IOException ex) {
+                Logger.getLogger(CreadorImagenes.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+    
+    private String obtenerDeclaraciones(File pintar){
+        String text="";
+        text+="VARS[\n";
+        text+="int ejemplo = 10;\n";
+        text+="]\n";
+        return text;
+    }
+    
+    private String escribirArchivoPintar(Lienzo lienzo){
+        String text="";
+        text+="INSTRUCCIONES("+lienzo.getId()+")[\n";
+        ArrayList<Pintar> pintar = lienzo.obtenerPintarEditado();
+        for (int i = 0; i < pintar.size(); i++) {
+            text+="PINTAR(\""+pintar.get(i).getIdColor()+"\",\""+pintar.get(i).getIdImagen()+"\","+pintar.get(i).getX()+","+pintar.get(i).getY()+");\n";
+        }
+        text+="]\n";
+        return text;
+    }
+    
     private void crear(Lienzo lienzo) throws IOException {
         String type;
         type = "png";

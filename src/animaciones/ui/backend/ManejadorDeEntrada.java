@@ -46,6 +46,7 @@ public class ManejadorDeEntrada {
         return files[index];
     }
     public void abrirArchivo(File file) {
+     
         try {
             String nombre = file.getName();
             BufferedReader br = new BufferedReader(new FileReader(file));

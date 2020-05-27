@@ -15,6 +15,7 @@ public class Casilla extends JPanel {
     private int[] coordenadas;
     private PanelLienzo pl;
     private Color color;
+    private String idColor;
 
     public Casilla(Color color,int tam,PanelLienzo pl) {
         this.pl=pl;
@@ -59,16 +60,26 @@ public class Casilla extends JPanel {
     private void PanelMouseClicked(java.awt.event.MouseEvent evt) {
         if (pl.isBorrador()) {
             this.color=pl.getLienzo().getFondo();
+            this.setColor(color, null);
             this.setBackground(color);
             this.validate();
             this.repaint();
         }else{
             this.color=pl.getColorActual();
+            this.setColor(color, pl.idColor);
             this.setBackground(color);
             this.validate();
             this.repaint();
             
         }
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public String getIdColor() {
+        return idColor;
     }
     
     
@@ -83,8 +94,9 @@ public class Casilla extends JPanel {
     }
 
 
-    public void setColor(Color color) {
+    public void setColor(Color color,String id) {
         this.color = color;
+        this.idColor =id;
         this.setBackground(color);
 
     }

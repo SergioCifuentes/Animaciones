@@ -5,7 +5,9 @@
  */
 package animaciones.Objetos;
 
+import animaciones.Analizadores.Semantico.Instrucciones.Pintar;
 import animaciones.ui.Casilla;
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
@@ -48,6 +50,17 @@ public class Imagen {
 
     public int getIndice() {
         return indice;
+    }
+    
+    public ArrayList<Pintar> obtenerPintar(Color fondo){
+        ArrayList<Pintar> pin = new ArrayList<>();
+            for (int i = 0; i < casillas.size(); i++) {
+                if (!casillas.get(i).getColor().equals(fondo)) {
+                    pin.add(new Pintar(id,casillas.get(i).getIdColor(),casillas.get(i).getCoordenadas()[0], casillas.get(i).getCoordenadas()[1]));
+                }
+        }
+            return pin;
+        
     }
     
 }

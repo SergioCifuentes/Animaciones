@@ -31,22 +31,20 @@ public class ManejadorDeCasillas {
             
             jPanel.setSize((lienzo.getTamaño()+7) * lienzo.getDimension().width, (lienzo.getTamaño()+7) * lienzo.getDimension().height);
             jPanel.setPreferredSize(jPanel.getSize());
-            System.out.println(jPanel.getSize());
             jPanel.setVisible(true);
-            System.out.println(lienzo.getDimension()+"cim");
             jPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(254, 254, 254)));
             for (int i = 0; i < lienzo.getDimension().height; i++) {
                 for (int j = 0; j < lienzo.getDimension().width; j++) {
                     
                     Casilla casilla = new Casilla(lienzo.getFondo(), lienzo.getTamaño());
                     casilla.setPreferredSize(new Dimension(lienzo.getTamaño(),lienzo.getTamaño()));
-                    casilla.setCoordenadas(j * lienzo.getTamaño(), i * lienzo.getTamaño());
+                    casilla.setCoordenadas(j , i);
                     
                     casilla.setVisible(true);
                     casilla.setBounds(j * lienzo.getTamaño(), i * lienzo.getTamaño(), lienzo.getTamaño(), lienzo.getTamaño());
                     for (int l = 0; l < pin.size(); l++) {
                         if (j==pin.get(l).getX()&&i==pin.get(l).getY()) {
-                            casilla.setColor(lienzo.obtenerColo(pin.get(l).getIdColor()));
+                            casilla.setColor(lienzo.obtenerColo(pin.get(l).getIdColor()),pin.get(l).getIdColor());
                         }
                     }
                     lienzo.getTiempo().getImagenes().get(k).getCasillas().add(casilla);

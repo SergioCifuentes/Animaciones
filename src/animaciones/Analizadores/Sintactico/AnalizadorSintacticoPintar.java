@@ -1072,7 +1072,7 @@ class CUP$AnalizadorSintacticoPintar$actions {
 		int codright = ((java_cup.runtime.Symbol)CUP$AnalizadorSintacticoPintar$stack.elementAt(CUP$AnalizadorSintacticoPintar$top-2)).right;
 		Object cod = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.elementAt(CUP$AnalizadorSintacticoPintar$top-2)).value;
 		if(asp.tablaDeSimbolos.obtenerExistencia((String)id,TablaDeSimbolos.TIPO_LIENZO)!=null){
-                                                                                                                    System.out.println(cod);
+                                                                                                                    
                                                                                                                     if(cod!=null){
                                                                                                                     idLienzos.add(0,(String)id);
                                                                                                                     instruccionesTotales.add(0, (ArrayList)cod);
@@ -1093,7 +1093,7 @@ class CUP$AnalizadorSintacticoPintar$actions {
 		int codright = ((java_cup.runtime.Symbol)CUP$AnalizadorSintacticoPintar$stack.elementAt(CUP$AnalizadorSintacticoPintar$top-1)).right;
 		Object cod = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.elementAt(CUP$AnalizadorSintacticoPintar$top-1)).value;
 		if(asp.tablaDeSimbolos.obtenerExistencia((String)id,TablaDeSimbolos.TIPO_LIENZO)!=null){
-                                                                                                                    System.out.println(cod);
+                                                                                                                    
                                                                                                                     if(cod!=null){
                                                                                                                     idLienzos.add(0,(String)id);
                                                                                                                     instruccionesTotales.add(0, (ArrayList)cod);
@@ -1865,7 +1865,7 @@ class CUP$AnalizadorSintacticoPintar$actions {
                                            }else{
                                                if(Inicializacion.verificarTipo(TablaDeSimbolos.TIPO_BOOLEAN,inicializaciones.get(i).getValor())) {
                                                     asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_BOOLEAN,inicializaciones.get(i).getValor());
-                                                    System.out.println("Valor guardado");
+                                                    
                                                 }else{
                                                      asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_BOOLEAN-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
                                                 }
@@ -1893,7 +1893,7 @@ class CUP$AnalizadorSintacticoPintar$actions {
                                            }else{
                                                if(Inicializacion.verificarTipo(TablaDeSimbolos.TIPO_STRING,inicializaciones.get(i).getValor())) {
                                                     asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_STRING,inicializaciones.get(i).getValor());
-                                                    System.out.println("Valor guardado");
+                                                    
                                                 }else{
                                                      asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_STRING-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
                                                 }
@@ -1921,7 +1921,7 @@ class CUP$AnalizadorSintacticoPintar$actions {
                                            }else{
                                                if(Inicializacion.verificarTipo(TablaDeSimbolos.TIPO_INT,inicializaciones.get(i).getValor())) {
                                                     asp.tablaDeSimbolos.insertObject((String)inicializaciones.get(i).getId(),TablaDeSimbolos.TIPO_INT,inicializaciones.get(i).getValor());
-                                                    System.out.println("Valor guardado");
+                                                    
                                                 }else{
                                                      asp.ayudarConErroresSemanticos(TablaDeSimbolos.TIPO_INT-1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoPintar$stack.peek()),(String)inicializaciones.get(i).getId());
                                                 }
@@ -1970,7 +1970,7 @@ class CUP$AnalizadorSintacticoPintar$actions {
     for (int j = 0; j < instruccionesTotales.size(); j++) {
                                                                                                             Lienzo lienzo=(Lienzo)((Objeto)asp.tablaDeSimbolos.obtenerExistencia(idLienzos.get(j),TablaDeSimbolos.TIPO_LIENZO)).getValor();
                                                                                                                     ArrayList<Pintar> pintar= new ArrayList<>();
-                                                                                                                    System.out.println(idLienzos.get(j)+"&&&&&&&&&&"+instruccionesTotales.get(j).size());
+                                                                                                                    
                                                                                                                    for (int i = 0; i < instruccionesTotales.get(j).size(); i++) {
                                                                                                                             instruccionesTotales.get(j).get(i).ejecutar(asp,pintar,idLienzos.get(j));
                                                                                                                     }

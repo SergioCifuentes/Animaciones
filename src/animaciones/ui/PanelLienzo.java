@@ -18,6 +18,7 @@ public class PanelLienzo extends javax.swing.JPanel {
 private Lienzo lienzo;
 private boolean borrador;
 private Color colorActual;
+public String idColor;
 private ArrayList<Imagen> imagenes;
 private String inicio;
 private String fin;
@@ -237,6 +238,7 @@ private String fin;
 
     private void comColoresItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comColoresItemStateChanged
         try {
+            idColor=lienzo.getColores().get(comColores.getSelectedIndex()).getId();
             colorActual=lienzo.getColores().get(comColores.getSelectedIndex()).getColor();
              lblColor.setBackground(colorActual);
         } catch (Exception e) {

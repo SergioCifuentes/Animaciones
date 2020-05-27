@@ -24,7 +24,7 @@ public class Sentencia extends Instruccion{
     public Sentencia(String id, Operacion op) {
         this.id = id;
         this.op = op;
-        System.out.println(op.getNum1()+" NUME!");
+       
         
     }
 
@@ -49,7 +49,7 @@ public class Sentencia extends Instruccion{
             switch (tipo) {
                 case TablaDeSimbolos.TIPO_INT:
                     if (op!=null) { 
-                        System.out.println("Insetar valor "+op.obtenerValor(asp)+" a "+id);
+                        
                         Integer op1 = op.obtenerValor(asp);
                         if (op1!=null) {
                              asp.tablaDeSimbolos.InsertarValor(id,tipo,op.obtenerValor(asp));
@@ -62,7 +62,7 @@ public class Sentencia extends Instruccion{
                         if (asp.tablaDeSimbolos.obtenerExistencia(idValor,tipo)!=null) {  
                             
                             Integer valorNuevo = (Integer)((Objeto)asp.tablaDeSimbolos.obtenerExistencia(idValor,tipo)).getValor();
-                            System.out.println("Insetar valor "+valorNuevo+" a "+id);
+                            
                             if (valorNuevo!=null) {
                                 asp.tablaDeSimbolos.InsertarValor(id,tipo,valorNuevo);
                             }else{
@@ -90,7 +90,7 @@ public class Sentencia extends Instruccion{
                         if (asp.tablaDeSimbolos.obtenerExistencia(idValor,tipo)!=null) {  
                             
                             String valorNuevo = (String)((Objeto)asp.tablaDeSimbolos.obtenerExistencia(idValor,tipo)).getValor();
-                            System.out.println("Insetar valor "+valorNuevo+" a "+id);
+                            
                             if (valorNuevo!=null) {
                                 asp.tablaDeSimbolos.InsertarValor(id,tipo,valorNuevo);
                             }else{
@@ -113,7 +113,7 @@ public class Sentencia extends Instruccion{
                 case TablaDeSimbolos.TIPO_BOOLEAN:
                     
                     if (condicionLog!=null) { 
-                        System.out.println("Insetar valor "+condicionLog.obtenerValor(asp)+" a "+id);
+                        
                         Boolean op1 = condicionLog.obtenerValor(asp);
                         if (op1!=null) {
                              asp.tablaDeSimbolos.InsertarValor(id,tipo,op1);
@@ -126,7 +126,7 @@ public class Sentencia extends Instruccion{
                         if (asp.tablaDeSimbolos.obtenerExistencia(idValor,tipo)!=null) {  
                             
                             Boolean valorNuevo = (Boolean)((Objeto)asp.tablaDeSimbolos.obtenerExistencia(idValor,tipo)).getValor();
-                            System.out.println("Insetar valor "+valorNuevo+" a "+id);
+                            
                             if (valorNuevo!=null) {
                                 asp.tablaDeSimbolos.InsertarValor(id,tipo,valorNuevo);
                             }else{

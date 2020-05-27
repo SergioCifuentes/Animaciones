@@ -71,7 +71,6 @@ public class Pintar extends Instruccion {
 
     @Override
     public void ejecutar(AnalizadorSintacticoPintar asp, ArrayList<Pintar> pintar, String IdLienzo) {
-        System.out.println("IMAMAMAMA "+idImagen);
         String idIm = null;
         String idCol = null;
         boolean error = false;
@@ -81,28 +80,25 @@ public class Pintar extends Instruccion {
                 String aux = ((String) ob.getValor());
                 idIm = aux.substring(1, aux.length() - 1);
             } else {
-                System.out.println("EEERRROR");
                 asp.getIde().escribirEnOutput("Error Semantico\nLa variable String " + idImagen + " no existe\n");
                 error = true;
             }
                   
             
-            if (asp.tablaDeSimbolos.obtenerExistencia(idIm, TablaDeSimbolos.TIPO_IMAGEN,IdLienzo) == null) {
+            if (idIm!=null&&asp.tablaDeSimbolos.obtenerExistencia(idIm, TablaDeSimbolos.TIPO_IMAGEN,IdLienzo) == null) {
                 error = true;
             }
-             System.out.println("s222222 "+error+"  " +idIm);
+             
         } else {
             idIm = imagen.substring(1, imagen.length() - 1);
         }
         if (!error) {
             if (color == null) {
-                System.out.println("IMA! "+idColor);
                 if (asp.tablaDeSimbolos.obtenerExistencia(idColor, TablaDeSimbolos.TIPO_STRING) != null) {
                 Objeto ob = (Objeto) asp.tablaDeSimbolos.obtenerExistencia(idColor, TablaDeSimbolos.TIPO_STRING);
                 String aux = ((String) ob.getValor());
                 idCol = aux.substring(1, aux.length() - 1);
             } else {
-                System.out.println("EEERRROR");
                 asp.getIde().escribirEnOutput("Error Semantico\nLa variable String " + idImagen + " no existe\n");
                 error = true;
             }
@@ -111,7 +107,7 @@ public class Pintar extends Instruccion {
             if (asp.tablaDeSimbolos.obtenerExistencia(idCol, TablaDeSimbolos.TIPO_COLOR,IdLienzo) == null) {
                 error = true;
             }
-             System.out.println("s222222 "+error+"  " +idCol);
+            
                 
                 
                 
@@ -127,8 +123,6 @@ public class Pintar extends Instruccion {
                 Integer inicioY=opyInicio.obtenerValor(asp);
                 Integer finX=opxInicio.obtenerValor(asp);
                 Integer finY=opyInicio.obtenerValor(asp);
-                System.out.println("XXX "+opxInicio.obtenerValor(asp));
-                System.out.println("YYY "+opyInicio.obtenerValor(asp));
                 if (inicioX!=null||inicioY!=null) {
                     if (opxFin!=null&&opxFin.obtenerValor(asp)!=null) {
                         finX=opxFin.obtenerValor(asp);
@@ -142,12 +136,12 @@ public class Pintar extends Instruccion {
                         finY=null;
                         asp.getIde().escribirEnOutput("Error Semantico\nLas coordenadas del pintar no son Enteras\n");
                     }
-                    System.out.println("FINaAA "+finX+finY);
+                    
                     if (finX!=null&&finY!=null) {
                         ArrayList<Dimension> dimensiones=obtenerDimensiones(inicioX, inicioY, finX, finY);
-                        System.out.println(dimensiones.size()+"DIM"+idIm+idCol);
+                    
                         for (int i = 0; i < dimensiones.size(); i++) {
-                            System.out.println("NEW DIM "+dimensiones.get(i).width+"  "+dimensiones.get(i).height);
+                    
                             pintar.add(new Pintar(idIm, idCol, dimensiones.get(i).width,dimensiones.get(i).height));
                         }
                         
@@ -159,6 +153,9 @@ public class Pintar extends Instruccion {
                     asp.getIde().escribirEnOutput("Error Semantico\nLas coordenadas del pintar no son Enteras\n");
                 }
             }
+        }
+        if (error ) {
+            asp.errorRecuperable=true;
         }
     }
     

@@ -12,7 +12,7 @@ import animaciones.Objetos.Lienzo;
 import animaciones.Objetos.ManejadorDeCasillas;
 import animaciones.ui.backend.ManejadorDeEntrada;
 import animaciones.ui.backend.NumeroLinea;
-import com.sun.xml.internal.bind.v2.util.EditDistance;
+
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -33,7 +33,7 @@ public class IDE extends javax.swing.JFrame {
         me= new ManejadorDeEntrada(this);
         initComponents();
         contarLineas();
-         cargarPruebas();
+
     }
 
     /**
@@ -452,20 +452,23 @@ public class IDE extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
-        if (manejadorDeAnalizadores.isAnalizado()) {
+        if (manejadorDeAnalizadores!=null&&manejadorDeAnalizadores.isAnalizado()) {
             ArrayList<Lienzo> lienzo= manejadorDeAnalizadores.obtenerLienzos();
             ManejadorDeCasillas mdc= new ManejadorDeCasillas();
             mdc.generarPanels(lienzo);
-            EditadorLienzos el = new EditadorLienzos(lienzo);
+            
+            EditadorLienzos el = new EditadorLienzos(lienzo,me.obtenerFile(3));
+            el.setManejadorArchivos(me);
             el.setVisible(true);
             
         }else{
             JOptionPane.showMessageDialog(this, "Se debe Analizar Correctamente el Texto para esta Funcion", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-        if (manejadorDeAnalizadores.isAnalizado()) {
+        if (manejadorDeAnalizadores!=null&&manejadorDeAnalizadores.isAnalizado()) {
             ArrayList<Lienzo> lienzo= manejadorDeAnalizadores.obtenerLienzos();
             ManejadorDeCasillas mdc= new ManejadorDeCasillas();
             mdc.generarPanels(lienzo);
@@ -543,16 +546,7 @@ public void borrarOutput(){
         }
     }
 
-    public void cargarPruebas(){
-        File fileAux=new File("/home/sergio/AAAAA/eje1.pnt");
-        me.abrirArchivo(fileAux);
-        fileAux=new File("/home/sergio/AAAAA/eje1.tmp");
-        me.abrirArchivo(fileAux);
-        fileAux=new File("/home/sergio/AAAAA/eje1.clrs");
-        me.abrirArchivo(fileAux);
-        fileAux=new File("/home/sergio/AAAAA/eje1.lnz");
-        me.abrirArchivo(fileAux);
-    }
+
     
     
     public void escribirEnOutput(String text){

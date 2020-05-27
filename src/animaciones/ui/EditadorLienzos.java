@@ -8,6 +8,8 @@ package animaciones.ui;
 import animaciones.Imagenes.CreadorImagenes;
 import animaciones.Imagenes.Manuales;
 import animaciones.Objetos.Lienzo;
+import animaciones.ui.backend.ManejadorDeEntrada;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -17,15 +19,20 @@ import javax.swing.JOptionPane;
  */
 public class EditadorLienzos extends javax.swing.JFrame {
 private ArrayList<Lienzo> lienzos;
+private File filePintar;
+private ManejadorDeEntrada me;
     /**
      * Creates new form EditadorLienzos
      */
-    public EditadorLienzos(ArrayList<Lienzo> lienzos) {
+    public EditadorLienzos(ArrayList<Lienzo> lienzos,File file) {
+        filePintar=file;
         this.lienzos=lienzos;
         initComponents();
         agregarTabs();
     }
-
+public void setManejadorArchivos(ManejadorDeEntrada me){
+    this.me=me;
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,9 +117,12 @@ private ArrayList<Lienzo> lienzos;
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         CreadorImagenes ci = new  CreadorImagenes();
-        ci.crearImagenes(lienzos);
+        ci.crearImagenes(lienzos,filePintar);
         JOptionPane.showMessageDialog(this, "Las imagenes se encuentran el La Carpeta \"Imagenes\" del Proyecto", "Imagenes Creadas", JOptionPane.INFORMATION_MESSAGE);
         this.setVisible(false);
+        if (me!=null) {
+            me.abrirArchivo(filePintar);
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed

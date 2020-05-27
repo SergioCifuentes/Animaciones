@@ -40,6 +40,15 @@ public class Lienzo {
         this.pintar = pintar;
     }
 
+    public ArrayList<Pintar> obtenerPintarEditado(){
+       ArrayList<Pintar> pin = new ArrayList<>();
+        for (int i = 0; i < tiempo.getImagenes().size(); i++) {
+            pin.addAll(tiempo.getImagenes().get(i).obtenerPintar(Fondo));
+        }
+        
+        return pin;
+    }
+    
     public ArrayList<Pintar> obtenerPintar(String imagen){
        ArrayList<Pintar> pin = new ArrayList<>();
         for (int i = 0; i < pintar.size(); i++) {

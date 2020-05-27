@@ -111,11 +111,11 @@ private boolean analizado=false;
                 
                 System.out.println("TOTAL DE ELEMENTO EN LA TABLA:" + tds.getObjetos().size());
                 for (int i = 0; i < tds.getObjetos().size(); i++) {
-                    System.out.println(tds.getObjetos().get(i).getId());
-                    System.out.println(tds.getObjetos().get(i).getTipo());
-                    System.out.println(tds.getObjetos().get(i).getValor());
+                    System.out.println("ID: "+tds.getObjetos().get(i).getId());
+                    System.out.println("TIPO: "+tds.getObjetos().get(i).getTipo());
+                    System.out.println("VALOR: "+tds.getObjetos().get(i).getValor());
                     
-                    System.out.println("===========");
+                    System.out.println("================");
                 }
 
             } catch (FileNotFoundException ex) {
