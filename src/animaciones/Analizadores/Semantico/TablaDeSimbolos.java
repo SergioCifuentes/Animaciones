@@ -43,6 +43,10 @@ public class TablaDeSimbolos {
         
         
     }
+    public void InsertarValor(String id,int tipo,Object valor){
+        Objeto ob = (Objeto)obtenerExistencia(id, tipo);
+        ob.setValor(valor);
+    }
         public Object obtenerExistencia(String id){
             
         int index = binarySearch(id);
@@ -106,9 +110,13 @@ public class TablaDeSimbolos {
     public Object obtenerExistencia(String id,int tipo,String idPerteneciente){
         int index = binarySearch(id);
         while (true) {
+
+            
+           
             if (objetos.size()>=index+1&&objetos.get(index).getId().equals(id)) {
                  if (objetos.get(index).getTipo()==tipo) {
-                     if (objetos.get(index).getIdPert().equals(idPerteneciente)) {
+                     System.out.println("ECISSS "+objetos.get(index).getIdPert()+"  "+idPerteneciente);
+                     if (objetos.get(index).getIdPert()!=null&&objetos.get(index).getIdPert().equals(idPerteneciente)) {
                         return objetos.get(index);
                      }else{
                          index++;
@@ -116,7 +124,7 @@ public class TablaDeSimbolos {
                 }else{
                      index++;
                  }
-            }else{
+            }else {
                 return null;
             }
            
@@ -151,6 +159,7 @@ public class TablaDeSimbolos {
         objetos.add(index,ob );
     }
         private int binarySearch(String id) {
+            
         int low = 0;
         int high = objetos.size() - 1;
         while (low <= high) {
@@ -163,6 +172,9 @@ public class TablaDeSimbolos {
             } else if (cmp > 0) {
                 high = mid - 1;
             } else {
+                while (mid>0&&objetos.get(mid-1).getId().equals(id)) {                    
+                    mid--;
+                }
                 return mid;
             }
         }

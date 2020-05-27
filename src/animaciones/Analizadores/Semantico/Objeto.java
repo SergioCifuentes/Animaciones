@@ -19,6 +19,7 @@ public class Objeto {
         this.id = id;
         this.tipo = tipo;
         this.valor = valor;
+        
     }
     public Objeto(String id, int tipo, Object valor,String id_lienzoPerteneciente) {
         this.id = id;
@@ -29,6 +30,10 @@ public class Objeto {
 
     public String getIdPert() {
         return idPert;
+    }
+
+    public void setValor(Object valor) {
+        this.valor = valor;
     }
 
     public void setIdPert(String idPert) {

@@ -5,6 +5,7 @@
  */
 package animaciones.Objetos;
 
+import animaciones.Analizadores.Semantico.Instrucciones.Pintar;
 import animaciones.ui.Casilla;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ public class ManejadorDeCasillas {
     }
 
     public void generarCasillas(Lienzo lienzo) {
+        
         for (int k = 0; k < lienzo.getTiempo().getImagenes().size(); k++) {
+            ArrayList<Pintar> pin=lienzo.obtenerPintar(lienzo.getTiempo().getImagenes().get(k).getId());
             JPanel jPanel = new JPanel();
             
             jPanel.setSize((lienzo.getTamaño()+7) * lienzo.getDimension().width, (lienzo.getTamaño()+7) * lienzo.getDimension().height);
@@ -41,7 +44,11 @@ public class ManejadorDeCasillas {
                     
                     casilla.setVisible(true);
                     casilla.setBounds(j * lienzo.getTamaño(), i * lienzo.getTamaño(), lienzo.getTamaño(), lienzo.getTamaño());
-                    
+                    for (int l = 0; l < pin.size(); l++) {
+                        if (j==pin.get(l).getX()&&i==pin.get(l).getY()) {
+                            casilla.setColor(lienzo.obtenerColo(pin.get(l).getIdColor()));
+                        }
+                    }
                     lienzo.getTiempo().getImagenes().get(k).getCasillas().add(casilla);
                     jPanel.add(casilla);
                      jPanel.validate();

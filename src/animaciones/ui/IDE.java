@@ -6,6 +6,7 @@
 package animaciones.ui;
 
 import animaciones.Analizadores.ManejadorDeAnalizadores;
+import animaciones.Imagenes.CreadorImagenes;
 import animaciones.Imagenes.Manuales;
 import animaciones.Objetos.Lienzo;
 import animaciones.Objetos.ManejadorDeCasillas;
@@ -468,6 +469,9 @@ public class IDE extends javax.swing.JFrame {
             ArrayList<Lienzo> lienzo= manejadorDeAnalizadores.obtenerLienzos();
             ManejadorDeCasillas mdc= new ManejadorDeCasillas();
             mdc.generarPanels(lienzo);
+            CreadorImagenes ci = new  CreadorImagenes();
+            ci.crearImagenes(lienzo);
+            JOptionPane.showMessageDialog(this, "Las imagenes se encuentran el La Carpeta \"Imagenes\" del Proyecto", "Imagenes Creadas", JOptionPane.INFORMATION_MESSAGE);
             
         }else{
             JOptionPane.showMessageDialog(this, "Se debe Analizar Correctamente el Texto para esta Funcion", "Error", JOptionPane.ERROR_MESSAGE);

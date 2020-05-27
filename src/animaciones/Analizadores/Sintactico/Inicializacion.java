@@ -13,14 +13,14 @@ import java.util.ArrayList;
  * @author sergio
  */
 public class Inicializacion {
-    protected static final int IGUAL_IGUAL=1;
-    protected static final int MENOR=2;
-    protected static final int MAYOR=3;
-    protected static final int MAYOR_IGUAL=4;
-    protected static final int MENOR_IGUAL=5;
-    protected static final int DIFERENTE=6;
-    protected static final int AND=1;
-    protected static final int OR=2;
+    public static final int IGUAL_IGUAL=1;
+    public static final int MENOR=2;
+    public static final int MAYOR=3;
+    public static final int MAYOR_IGUAL=4;
+    public static final int MENOR_IGUAL=5;
+    public static final int DIFERENTE=6;
+    public static final int AND=1;
+    public static final int OR=2;
     private String id;
     private Object valor;
     private boolean error=false;

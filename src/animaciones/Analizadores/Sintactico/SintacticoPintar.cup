@@ -1,9 +1,9 @@
 package animaciones.Analizadores.Sintactico;
+import animaciones.Analizadores.Semantico.Instrucciones.*;
 import animaciones.Analizadores.Semantico.TablaDeSimbolos;
 import animaciones.Objetos.Lienzo;
 import animaciones.Analizadores.Semantico.Objeto;
 import java.util.ArrayList;
-import java.awt.Color;
 import animaciones.ui.IDE;
 import java_cup.runtime.Symbol;
 
@@ -14,6 +14,9 @@ import java_cup.runtime.Symbol;
         protected IDE ide;
     public  void setFrame(IDE frame){
         ide =frame;
+    }
+ public IDE getIde() {
+        return ide;
     }
 public void setTablaDeSimbolos(TablaDeSimbolos tablaDeSimbolos) {
         this.tablaDeSimbolos = tablaDeSimbolos;
@@ -120,6 +123,9 @@ action code {:
     private boolean error =false;
     private boolean errorRecuperable=false;
         private ArrayList<Inicializacion> inicializaciones = new ArrayList<>();
+        private ArrayList<String> idLienzos = new ArrayList<>();
+        private ArrayList<Instruccion> instrucciones = new ArrayList<>();
+        private ArrayList<ArrayList<Instruccion>> instruccionesTotales = new ArrayList<>();
     private void resetearAtributos(Object[] atributos){
         for(int i=0;i<atributos.length;i++){
             atributos[i]=null;
@@ -175,11 +181,20 @@ terminal String Id,String,Entero,ERROR;
 
 /* Non-terminals */
 non terminal Inicio,Declaraciones,Declaracion, Inicializacion, Numero, Bool, Boolean, OpLog, 
-OpRelacional, Instrucciones,VarId,OpAritmetica, Codigo,VariablesBoolean,VariableBoolean,VariableInt,VariablesInt,VariableString,VariablesString, Instruccion, Pintar, Id_Pintar, Num_Pintar, If, Else, While ;
+OpRelacional, Instrucciones,ConLog,Condicion,NumOp,Boolean2,VarId,OpAritmetica,OpInstruccion,OpNum,CodigoNoRealizable, Codigo,VariablesBoolean,VariableBoolean,VariableInt,VariablesInt,VariableString,VariablesString, Instruccion, Pintar, Id_Pintar, Num_Pintar, If, Else, While ;
 
 start with Inicio;
 
-Inicio 		::= VARS CORCHETE_A Declaraciones CORCHETE_C Instrucciones {:asp.error=this.error;asp.errorRecuperable=this.errorRecuperable;:}
+Inicio 		::= VARS CORCHETE_A Declaraciones CORCHETE_C Instrucciones {:asp.error=this.error;asp.errorRecuperable=this.errorRecuperable;
+    for (int j = 0; j < instruccionesTotales.size(); j++) {
+                                                                                                            Lienzo lienzo=(Lienzo)((Objeto)asp.tablaDeSimbolos.obtenerExistencia(idLienzos.get(j),TablaDeSimbolos.TIPO_LIENZO)).getValor();
+                                                                                                                    ArrayList<Pintar> pintar= new ArrayList<>();
+                                                                   
+                                                                                                                   for (int i = 0; i < instruccionesTotales.get(j).size(); i++) {
+                                                                                                                            instruccionesTotales.get(j).get(i).ejecutar(asp,pintar,idLienzos.get(j));
+                                                                                                                    }
+                                                                                                                    lienzo.setPintar(pintar);
+                                                                                                                    };:}
                     |error {:error=true;asp.ayudarConErroresSintacticos(6);asp.error=this.error;asp.errorRecuperable=this.errorRecuperable;:} ;
 Declaraciones   ::= Declaracion PUNTO_COMA Declaraciones
 					|Declaracion PUNTO_COMA;
@@ -430,8 +445,11 @@ OpLog::= AND{:RESULT=Inicializacion.AND;:}
 	|OR{:RESULT=Inicializacion.OR;:}
         |error {:asp.ayudarConErroresSintacticos(4);
                             RESULT=null;:};
+Boolean2     ::=  TRUE   {:RESULT = true;:}
+		| FALSE{:RESULT = false;:};
 Boolean     ::=  TRUE   {:RESULT = true;:}
 		| FALSE{:RESULT = false;:}
+
 		| Numero:num1 OpRelacional:op Numero:num2{:if(num1!=null&&op!=null&&num2!=null){
                                                                 RESULT = Inicializacion.realizarOperacionRelacional(Integer.parseInt((String)num1),
                                                                            Integer.parseInt((String)num2),Integer.parseInt((String)op) );
@@ -482,43 +500,138 @@ Boolean     ::=  TRUE   {:RESULT = true;:}
                                                                     }:};
                 
 OpRelacional::= IGUAL_IGUAL{:RESULT= Inicializacion.IGUAL_IGUAL;:}
-                |MENOR  {:RESULT= Inicializacion.IGUAL_IGUAL;:}
-                |MAYOR  {:RESULT= Inicializacion.IGUAL_IGUAL;:}
-                |MAYOR_IGUAL    {:RESULT= Inicializacion.IGUAL_IGUAL;:}
-                |MENOR_IGUAL    {:RESULT= Inicializacion.IGUAL_IGUAL;:}
-                |DIFERENTE  {:RESULT= Inicializacion.IGUAL_IGUAL;:};
+                |MENOR  {:RESULT= Inicializacion.MENOR;:}
+                |MAYOR  {:RESULT= Inicializacion.MAYOR;:}
+                |MAYOR_IGUAL    {:RESULT= Inicializacion.MAYOR_IGUAL;:}
+                    |MENOR_IGUAL    {:RESULT= Inicializacion.MENOR_IGUAL;:}
+                |DIFERENTE  {:RESULT= Inicializacion.DIFERENTE;:};
 
 
 
 
 
 
-Instrucciones 	::=  INSTRUCCIONES PARENTESIS_A Id PARENTESIS_C CORCHETE_A Codigo CORCHETE_C Instrucciones
-					|INSTRUCCIONES PARENTESIS_A Id PARENTESIS_C CORCHETE_A Codigo CORCHETE_C ;
+Instrucciones 	::=  INSTRUCCIONES PARENTESIS_A Id:id PARENTESIS_C CORCHETE_A Codigo:cod CORCHETE_C{:if(asp.tablaDeSimbolos.obtenerExistencia((String)id,TablaDeSimbolos.TIPO_LIENZO)!=null){
+                                                                                                                    System.out.println(cod);
+                                                                                                                    if(cod!=null){
+                                                                                                                    idLienzos.add(0,(String)id);
+                                                                                                                    instruccionesTotales.add(0, (ArrayList)cod);
+                                                                                                                    }
+                                                                                                                    }else{}instrucciones=new ArrayList<>();:}
 
-Codigo ::=  Instruccion Codigo
-		|Instruccion;
-Instruccion::= Id IGUAL Id PUNTO_COMA
-                |Id IGUAL Numero PUNTO_COMA
-                |Id IGUAL String PUNTO_COMA
-                |Id IGUAL Bool PUNTO_COMA
-			|Pintar PUNTO_COMA
-			|If
-			|While;
-CodigoNoRealizable ::=  Instruccion CodigoNoRealizable
-                        |Instruccion;			
-Pintar::=PINTAR PARENTESIS_A Id_Pintar COMA Id_Pintar COMA Num_Pintar COMA Num_Pintar PARENTESIS_C;
+
+
+
+
+
+|INSTRUCCIONES PARENTESIS_A Id:id PARENTESIS_C CORCHETE_A Codigo:cod CORCHETE_C Instrucciones      {:if(asp.tablaDeSimbolos.obtenerExistencia((String)id,TablaDeSimbolos.TIPO_LIENZO)!=null){
+                                                                                                                    System.out.println(cod);
+                                                                                                                    if(cod!=null){
+                                                                                                                    idLienzos.add(0,(String)id);
+                                                                                                                    instruccionesTotales.add(0, (ArrayList)cod);
+                                                                                                                    }
+                                                                                                                    }else{}instrucciones=new ArrayList<>();:}
+					;
+
+Codigo ::=  Instruccion:in{:ArrayList<Instruccion> ins = new ArrayList<>();
+                if(in!=null){
+                    ins.add((Instruccion)in);
+                    instrucciones.add(0,(Instruccion)in);}
+                   RESULT= ins;:}
+		|Instruccion:in Codigo:cod  {:ArrayList<Instruccion> ins = new ArrayList<>();
+                if(in!=null){ins.add((Instruccion)in);
+                instrucciones.add(0,(Instruccion)in);}
+                if (cod!=null) {
+                    ArrayList<Instruccion> aux = (ArrayList<Instruccion>)cod;
+                    for (int i = 0; i < aux.size(); i++) {
+                        ins.add(aux.get(i));
+                    }
+                }
+                RESULT=ins;:};
+Instruccion::= Id:id IGUAL OpInstruccion:op PUNTO_COMA{:Sentencia sen = new Sentencia((String)id,(Operacion)op);
+                                                        RESULT=sen;:}
+               
+               |Id:id IGUAL Entero:entero PUNTO_COMA{:Operacion op = new Operacion(Integer.parseInt((String)entero));
+                                                        Sentencia sen = new Sentencia((String)id,(Operacion)op);
+                                                        RESULT=sen;:}
+		
+               |Id:id IGUAL Id:id2 PUNTO_COMA{:Sentencia sen = new Sentencia((String)id,(String)id2,null);
+                                                        RESULT=sen;:}
+               |Id:id IGUAL ConLog:con PUNTO_COMA{:Sentencia sen = new Sentencia((String)id,(CondicionLog)con);
+                                                        RESULT=sen;:}
+                |Id:id IGUAL String:string PUNTO_COMA{:Sentencia sen = new Sentencia((String)id,(String)string);
+                                                        RESULT=sen;:}
+                                        
+			|Pintar:pintar PUNTO_COMA  {:RESULT=(Pintar)pintar;:}
+			|If:pintar {:RESULT=(If)pintar;:}
+			|While:pintar {:RESULT=(While)pintar;:};
+ConLog::=Condicion:co1 OpLog:tipo Condicion:co2  {:CondicionLog co = new CondicionLog((Condicion)co1,(Condicion)co2,(Integer)tipo);
+                                                                   
+                                                                    RESULT =co;:}
+        |Boolean2:bool                                   {:Condicion co = new Condicion((Boolean)bool);
+                                                                    CondicionLog condi= new CondicionLog(co);
+                                                                    RESULT =condi;:}
+        |NumOp:num1 OpRelacional:tipo NumOp:num2   {:Condicion co = new Condicion((Operacion)num1,(Operacion)num2,(Integer)tipo);
+                                                                    CondicionLog condi= new CondicionLog(co);
+                                                                    RESULT =condi;:};
+Condicion::= Boolean2:bool    {:Condicion co = new Condicion((Boolean)bool);
+                                                                    RESULT= co;:}
+            |Id:id {:Condicion co = new Condicion((String)id);
+                                                                    RESULT =co;:}
+            |NumOp:num1 OpRelacional:tipo NumOp:num2   {:Condicion co = new Condicion((Operacion)num1,(Operacion)num2,(Integer)tipo);
+                                                                    RESULT =co;:};
+NumOp::=OpInstruccion:op{:RESULT=op;:}
+        |OpNum:op{:RESULT=op;:};
+
+OpInstruccion::=   OpNum:num1 OpAritmetica:op OpNum:num2{:Operacion operacion = new Operacion((Operacion)num1,(Operacion)num2,(Integer)op);
+                    RESULT =operacion;:}
+                    |OpNum:num1 OpAritmetica:op OpInstruccion:num2{:Operacion operacion = new Operacion((Operacion)num1,(Operacion)num2,(Integer)op);
+                    RESULT =operacion;:};
+OpNum::=Entero:entero   {:Operacion op = new Operacion(Integer.parseInt((String)entero));
+                            RESULT=op;:}
+        |Id:id{:Operacion op = new Operacion((String)id);
+                                         RESULT=op;:};
+			
+Pintar::=PINTAR PARENTESIS_A Id_Pintar:color COMA Id_Pintar:imagen COMA Num_Pintar:numx COMA Num_Pintar:numy PARENTESIS_C{:
+                                                        
+                                                        Pintar pi = new Pintar((String)imagen,(String)color,((ArrayList<Operacion>)numx).get(0), 
+                                                ((ArrayList<Operacion>)numx).get(1), ((ArrayList<Operacion>)numy).get(0), ((ArrayList<Operacion>)numy).get(1));
+                                                    RESULT=pi;:};
 Id_Pintar::=String:string {:RESULT =string;:}
-            |VarId:id {:RESULT =id;:};
-Num_Pintar::=Numero PUNTOS_SEGUIDOS Num_Pintar
-			|Numero
-                |Id PUNTOS_SEGUIDOS Num_Pintar
-                |Id;
-If::=	IF PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C Else
-        |IF PARENTESIS_A Id PARENTESIS_C LLAVE_A CodigoNoRealizable LLAVE_C Else;
-Else::=	ELSE LLAVE_A Codigo LLAVE_C
-		|;
-While	::= WHILE PARENTESIS_A Bool PARENTESIS_C LLAVE_A Codigo LLAVE_C
-            |WHILE PARENTESIS_A Id PARENTESIS_C LLAVE_A Codigo LLAVE_C;
+            |Id:id {:RESULT =id;:};
+Num_Pintar::=NumOp:op1 PUNTOS_SEGUIDOS NumOp:op2{:ArrayList<Operacion> opera= new ArrayList<>();
+                                     opera.add((Operacion)op1);
+                                     opera.add((Operacion)op2);
+                                     RESULT =opera;   :}
+			|NumOp:op{:ArrayList<Operacion> opera= new ArrayList<>();
+                                     opera.add((Operacion)op);
+                                    opera.add(null);
+                                    RESULT =opera;:};
+If::=	IF PARENTESIS_A ConLog:condicion PARENTESIS_C LLAVE_A Codigo:co LLAVE_C Else:el{:ArrayList<Instruccion> els= null; 
+                                                                                            if(el!=null){
+                                                                                            els=(ArrayList<Instruccion>)el;
+                                                                                              }
+                                                                    If ifV = new If((CondicionLog)condicion,(ArrayList<Instruccion>)co,els);
+                                                                        RESULT=ifV;:}
+        |IF PARENTESIS_A Id:id PARENTESIS_C LLAVE_A Codigo:co LLAVE_C Else:el{:ArrayList<Instruccion> els= null; 
+                                                                                            if(el!=null){
+                                                                                            els=(ArrayList<Instruccion>)el;
+                                                                                              }
+                                                                    If ifV = new If((String)id,(ArrayList<Instruccion>)co,els);
+                                                                       RESULT=ifV;:};
+Else::=	ELSE LLAVE_A Codigo:codigo LLAVE_C{:RESULT=codigo;:}
+		|{:RESULT = null;:};
+While	::= WHILE PARENTESIS_A ConLog:con PARENTESIS_C LLAVE_A Codigo:codigo LLAVE_C{:ArrayList<Instruccion> cod= null; 
+                                                                                            if(codigo!=null){
+                                                                                            cod=(ArrayList<Instruccion>)codigo;
+                                                                                              }
+                                                                    While whileV = new While((CondicionLog)con,cod);
+                                                                       RESULT=whileV;:}
+            |WHILE PARENTESIS_A Id:id PARENTESIS_C LLAVE_A Codigo:codigo LLAVE_C{:ArrayList<Instruccion> cod= null; 
+                                                                                            if(codigo!=null){
+                                                                                            cod=(ArrayList<Instruccion>)codigo;
+                                                                                              }
+                                                                    While whileV = new While((String)id,cod);
+                                                                       RESULT=whileV;:};
 
 

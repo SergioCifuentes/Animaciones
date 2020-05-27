@@ -5,6 +5,7 @@
  */
 package animaciones.Objetos;
 
+import animaciones.Analizadores.Semantico.Instrucciones.Pintar;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class Lienzo {
     private Dimension dimension;
     private ArrayList<ColorParaLienzo> colores;
     private Tiempo tiempo;
-    
+    private ArrayList<Pintar> pintar;
     public static boolean verificarObligatoriosTam(Object[] atributosTam){
         for (int i = 0; i < atributosTam.length; i++) {
             if (atributosTam[i]==null) {
@@ -35,6 +36,28 @@ public class Lienzo {
         return true;
     }
 
+    public void setPintar(ArrayList<Pintar> pintar) {
+        this.pintar = pintar;
+    }
+
+    public ArrayList<Pintar> obtenerPintar(String imagen){
+       ArrayList<Pintar> pin = new ArrayList<>();
+        for (int i = 0; i < pintar.size(); i++) {
+            if (pintar.get(i).getIdImagen().equals(imagen)) {
+                pin.add(pintar.get(i));
+            }
+        }
+        return pin;
+    }
+    public Color obtenerColo(String id){
+        for (int i = 0; i < colores.size(); i++) {
+            if (colores.get(i).getId().equals(id)) {
+                return colores.get(i).getColor();
+            }
+        }
+        return Fondo;
+    }
+    
     public ArrayList<ColorParaLienzo> getColores() {
         return colores;
     }
